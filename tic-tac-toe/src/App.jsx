@@ -4,7 +4,7 @@ import { useState } from "react"
 import confetti from 'canvas-confetti'
 import { Square } from "./components/Square"
 import { TURNS, WINNER_COMBOS } from "./constants"
-import { checkWinner } from "./logic/board"
+import { checkWinner, checkEndGame } from "./logic/board"
 import { WinnerModal } from "./components/WinnerModal"
 
 function App() {
@@ -22,11 +22,7 @@ function App() {
     setWinner(null)
   }
 
-  //Validar si hay un empate
-  const checkEndGame =(newBoard)=>{
-    return newBoard.every((square)=> square !== null)
-  }
-    
+
 
   const updateBoard = (index)=>{
 

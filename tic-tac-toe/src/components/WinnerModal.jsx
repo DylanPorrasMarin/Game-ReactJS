@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-no-undef */
-/* eslint-disable no-undef */
 import { Square } from "./Square"
+// eslint-disable-next-line react/prop-types
 export function WinnerModal ({winner, resetGame}){
    if( winner === null) return
 
