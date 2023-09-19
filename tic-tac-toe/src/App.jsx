@@ -1,17 +1,32 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import confetti from 'canvas-confetti'
 import { Square } from "./components/Square"
 import { TURNS, WINNER_COMBOS } from "./constants"
 import { checkWinner, checkEndGame } from "./logic/board"
 import { WinnerModal } from "./components/WinnerModal"
+import { saveGameToStorage, resetGameStorage } from "./logic/storage"
 
 function App() {
 
-  const [board, setBoard] = useState(Array(9).fill(null))
+  const [board, setBoard] = useState(()=>{
 
-  const [turn, setTurn]= useState(TURNS.X)
+    const  boardFromStorage = window.localStorage.getItem('board')
+
+    if(boardFromStorage) return JSON.parse(boardFromStorage)
+
+    return Array(9).fill(null)
+
+  })
+
+  const [turn, setTurn]= useState(()=>{
+
+    const turnFromStorage = window.localStorage.getItem('turn')
+    
+    return turnFromStorage ?? TURNS.X
+
+  })
 
   const [winner, setWinner]= useState(null) //NUll no hay ganador, false hay un empate, true como ganador
 
@@ -20,6 +35,9 @@ function App() {
     setBoard(Array(9).fill(null))
     setTurn(TURNS.X)
     setWinner(null)
+
+    resetGameStorage()
+
   }
 
 
@@ -40,6 +58,12 @@ function App() {
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X
     setTurn(newTurn)
 
+    //Guardar partida
+    saveGameToStorage({
+      board: newBoard, 
+      turn: newTurn
+    })
+
     //revisar si hay un ganador
     const newWinner = checkWinner(newBoard)
     if(newWinner){
@@ -50,6 +74,11 @@ function App() {
     }
 
   }
+
+  //El useeffect se ejecuta cada vez que se ejecuta el componenete, si no hace poir medio de dependdencias y espeficiar cuando se tiene que ejecutar
+  useEffect(()=>{
+    console.log('useEffect')
+  }, [turn, board])
 
   return (
     <main className="board">
